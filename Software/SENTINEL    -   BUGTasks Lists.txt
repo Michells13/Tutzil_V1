@@ -1,0 +1,17 @@
+SENTINEL    -   BUG/Tasks Lists
+
+
+*Tasks
+-Bugs
+
+
+*Put comms in an extra thread then we can keep recieving images whitout freezing the screen.------------------TEST 
+
+*double check why some times UI doesn't start  the communication (maybe it doesn't run the vision module)
+
+-If there is no object in the image we got an errornwith  the convination track=true and tracklet=True
+
+*Activate/Deactivate the use of  test communication with UI
+
+*Create an state flags (comms, vision module)  to control buttons and mesagges
+

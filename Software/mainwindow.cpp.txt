@@ -1,0 +1,106 @@
+// mainwindow.cpp
+#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+#include "worker.h" // Add this line to include the Worker class
+#include <QThread>  // Include the QThread class
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_process(nullptr)
+    , tcpSocket(nullptr)
+    , EmergencyStop(false)  // Initialize EmergencyStop
+    , workerThread(nullptr)
+{
+    ui->setupUi(this);
+}
+
+MainWindow::~MainWindow() {
+    delete ui;
+}
+
+void MainWindow::on_pushButton_clicked() {
+    ui->textBrowser->insertPlainText("Starting vision module... \n");
+
+    if (!m_process) {
+        m_process = new QProcess();
+        connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(visionProcessFinished(int, QProcess::ExitStatus)));
+    }
+
+    ui->textBrowser->insertPlainText("Starting communication... \n");
+
+    Worker *worker = new Worker();
+    workerThread = new QThread();
+    worker->moveToThread(workerThread);
+
+    connect(workerThread, &QThread::started, worker, &Worker::doWork);
+    connect(worker, &Worker::updateTextBrowser, this, &MainWindow::handleUpdateTextBrowser);
+    connect(worker, &Worker::finished, this, &MainWindow::handleWorkerFinished);
+    connect(worker, &Worker::finished, workerThread, &QThread::quit);
+    connect(worker, &Worker::finished, worker, &Worker::deleteLater);
+    connect(workerThread, &QThread::finished, workerThread, &QThread::deleteLater);
+
+    workerThread->start();
+}
+
+void MainWindow::on_pushButton_2_clicked() {
+    EmergencyStop = true;
+    if (m_process) {
+        m_process->close();
+        delete m_process;
+        m_process = nullptr;
+    }
+    ui->textBrowser->insertPlainText("_____________________________ \n");
+    ui->textBrowser->insertPlainText("Vision module ended.... \n");
+    ui->textBrowser->insertPlainText("Communication stopped.... \n");
+}
+
+void MainWindow::on_pushButton_3_clicked() {
+    // Implement additional button functionality if needed
+}
+
+void MainWindow::handleUpdateTextBrowser(const QString &text) {
+    ui->textBrowser->insertPlainText(text);
+}
+
+void MainWindow::handleWorkerFinished() {
+    ui->textBrowser->insertPlainText("Worker finished its task.\n");
+    workerThread = nullptr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Start the vision Module/script
+    ui->textBrowser->insertPlainText("Starting vision module... \n");
+    //ui->output.
+    if (!m_process) {
+        m_process = new QProcess();
+        connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(visionProcessFinished(int, QProcess::ExitStatus)));
+    }
+   // m_process->start(virtualenvPath, QStringList() << scriptPath);
+   //connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(visionProcessOutput())); // Conecta la señal readyReadStandardOutput() al slot onProcessOutput()
+    //m_process->waitForStarted(2000);
+    ui->textBrowser->insertPlainText("Starting communication... \n");
+
