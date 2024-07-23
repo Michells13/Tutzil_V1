@@ -19,7 +19,7 @@ To get started with Tutzil, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/tutzil.git
+   git clone https://github.com/michells13/tutzil.git
    cd tutzil  
    
 2. **Install Dependencies**:
